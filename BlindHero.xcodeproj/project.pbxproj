@@ -66,7 +66,7 @@
 			isa = PBXGroup;
 			children = (
 				C2A2AB60C2A2AB2000000001 /* README.md */,
-				FAD5009D1ED668B60074D713 /* BreakfastFinder */,
+				FAD5009D1ED668B60074D713 /* BlidHero */,
 				FAD5009C1ED668B60074D713 /* Products */,
 				FA86553BE8674B6BE41BAA64 /* Configuration */,
 				6699E7B5AD92619B7FE916AC /* LICENSE */,
@@ -81,7 +81,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		FAD5009D1ED668B60074D713 /* BreakfastFinder */ = {
+		FAD5009D1ED668B60074D713 /* BlidHero */ = {
 			isa = PBXGroup;
 			children = (
 				0A0EDFBA2536CA2200E391A9 /* YOLOv3.mlmodel */,
@@ -95,7 +95,7 @@
 				FA4750C920BF3F48003E19ED /* Breakfast Finder Logo.png */,
 				FAD500AA1ED668B60074D713 /* Info.plist */,
 			);
-			path = BreakfastFinder;
+			path = BlidHero;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
