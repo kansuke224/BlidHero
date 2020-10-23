@@ -16,12 +16,15 @@ class VisionObjectRecognitionViewController: ViewController {
     // Vision parts
     private var requests = [VNRequest]()
     
+    /* SpeechSynthesizerクラス */
+    var talker = AVSpeechSynthesizer()
+    
     @discardableResult
     func setupVision() -> NSError? {
         // Setup Vision parts
         let error: NSError! = nil
         
-        guard let modelURL = Bundle.main.url(forResource: "ObjectDetector", withExtension: "mlmodelc") else {
+        guard let modelURL = Bundle.main.url(forResource: "YOLOv3", withExtension: "mlmodelc") else {
             return NSError(domain: "VisionObjectRecognitionViewController", code: -1, userInfo: [NSLocalizedDescriptionKey: "Model file is missing"])
         }
         do {
@@ -40,6 +43,18 @@ class VisionObjectRecognitionViewController: ViewController {
         }
         
         return error
+    }
+    
+    // 非同期処理
+    func processAsync(completion: @escaping () -> Void) {
+        // 話す内容をセット
+        let utterance = AVSpeechUtterance(string: "検出しました")
+        // 言語を日本に設定
+        utterance.voice = AVSpeechSynthesisVoice(language: "ja-JP")
+        // 実行
+        self.talker.speak(utterance)
+        
+        
     }
     
     func drawVisionRequestResults(_ results: [Any]) {
@@ -61,9 +76,36 @@ class VisionObjectRecognitionViewController: ViewController {
                                                             confidence: topLabelObservation.confidence)
             shapeLayer.addSublayer(textLayer)
             detectionOverlay.addSublayer(shapeLayer)
+            
+            // セマフォを0で初期化
+            let semaphore = DispatchSemaphore(value: 0)
+            
+            let queue = DispatchQueue.global(qos: .default)
+            queue.async {
+                // 話す内容をセット
+                let utterance = AVSpeechUtterance(string: "検出しました")
+                // 言語を日本に設定
+                utterance.voice = AVSpeechSynthesisVoice(language: "ja-JP")
+                // 実行
+                self.talker.speak(utterance)
+                
+                semaphore.signal()
+            }
+            
+//            processAsync { () in
+//                print("semphoreインクリメント")
+//                semaphore.signal()
+//            }
+            
+            print("semaphore待機")
+            // セマフォをデクリメント（-1）、ただしセマフォが0の場合はsignal()の実行を待つ
+            semaphore.wait()
         }
         self.updateLayerGeometry()
         CATransaction.commit()
+        
+        // 止める
+        // Thread.sleep(forTimeInterval: 3)
     }
     
     override func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
